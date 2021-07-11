@@ -24,55 +24,59 @@ class ColorsConfiguratorViewController: UIViewController {
             slider?.value = Float.random(in: 0...1)
         }
 
-        updateRedColor()
-        updateGreenColor()
-        updateBlueColor()
-
         setColor()
+        setValue(for: redColorValue, greenColorValue, blueColorValue)
+        setColorDisplay(for: redColorSlider, greenColorSlider, blueColorSlider)
     }
 
-    func setColor() {
+    @IBAction func sliderAction(_ sender: UISlider) {
+        
+        switch sender {
+        case redColorSlider: setValue(for: redColorValue)
+        case greenColorSlider: setValue(for: greenColorValue)
+        default: setValue(for: blueColorValue)
+        }
+        setColorDisplay(for: sender)
+        setColor()
+    }
+    private func setColor() {
         currentColorView.backgroundColor = UIColor(
             red: redColorSlider.value,
             green: greenColorSlider.value,
             blue: blueColorSlider.value
         )
     }
-
-    func updateRedColor() {
-        redColorValue.text = calcColorStringValue(redColorSlider.value)
-        redColorDisplay.backgroundColor = UIColor(red: redColorSlider.value)
+    
+    private func setColorDisplay(for sliders: UISlider...) {
+        sliders.forEach { slider in
+            switch slider {
+            case redColorSlider:
+                redColorDisplay.backgroundColor = UIColor(red: slider.value)
+            case greenColorSlider:
+                greenColorDisplay.backgroundColor = UIColor(green: slider.value)
+            default:
+                blueColorDisplay.backgroundColor = UIColor(blue: slider.value)
+            }
+        }
     }
 
-    func updateGreenColor() {
-        greenColorValue.text = calcColorStringValue(greenColorSlider.value)
-        greenColorDisplay.backgroundColor = UIColor(green: greenColorSlider.value)
+    
+    private func setValue(for labels: UILabel...) {
+        labels.forEach { label in
+            switch label {
+            case redColorValue:
+                label.text = calcColorStringValue(redColorSlider.value)
+            case greenColorValue:
+                label.text = calcColorStringValue(greenColorSlider.value)
+            default:
+                label.text = calcColorStringValue(blueColorSlider.value)
+            }
+        }
     }
-
-    func updateBlueColor() {
-        blueColorValue.text = calcColorStringValue(blueColorSlider.value)
-        blueColorDisplay.backgroundColor = UIColor(blue: blueColorSlider.value)
-    }
-
-    @IBAction func redColorUpdated() {
-        updateRedColor()
-        setColor()
-    }
-
-    @IBAction func greenColorUpdated() {
-        updateGreenColor()
-        setColor()
-    }
-
-    @IBAction func blueColorUpdated() {
-        updateBlueColor()
-        setColor()
-    }
-
-    func calcColorStringValue(_ value: Float) -> String {
+    
+    private func calcColorStringValue(_ value: Float) -> String {
         "\(round(value * 100) / 100)"
     }
-
 }
 
 extension UIColor {
